@@ -1,0 +1,86 @@
+{
+  "name": "Captura e qualificação de leads",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "captura-leads",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "id": "4d6ff680-e25f-4ea4-a2e3-b8754dccf005",
+      "name": "Receber lead",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.1,
+      "position": [
+        -320,
+        0
+      ],
+      "webhookId": "5f199073-28cb-4a75-b9d4-771822f068e5"
+    },
+    {
+      "parameters": {
+        "jsCode": "const body = $json.body ?? $json;\nconst nome = String(body.nome ?? '').trim();\nconst email = String(body.email ?? '').trim().toLowerCase();\nconst telefone = String(body.telefone ?? '').trim();\nconst mensagem = String(body.mensagem ?? '').trim();\nconst origem = String(body.origem ?? 'webhook').trim();\n\nif (!nome || !email) {\n  return [{\n    json: {\n      sucesso: false,\n      statusCode: 400,\n      erro: 'Os campos nome e email são obrigatórios.'\n    }\n  }];\n}\n\nconst emailValido = /^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$/.test(email);\nif (!emailValido) {\n  return [{\n    json: {\n      sucesso: false,\n      statusCode: 400,\n      erro: 'Informe um email válido.'\n    }\n  }];\n}\n\nconst texto = mensagem.toLowerCase();\nconst termosAltoInteresse = ['orçamento', 'proposta', 'contratar', 'preço', 'reunião'];\nconst interesse = termosAltoInteresse.some((termo) => texto.includes(termo))\n  ? 'alto'\n  : mensagem.length >= 40\n    ? 'médio'\n    : 'baixo';\n\nreturn [{\n  json: {\n    sucesso: true,\n    statusCode: 201,\n    lead: {\n      nome,\n      email,\n      telefone,\n      mensagem,\n      origem,\n      interesse,\n      recebidoEm: new Date().toISOString()\n    }\n  }\n}];"
+      },
+      "id": "bf28f5a9-31ba-47b8-bac3-d3da3f609e5f",
+      "name": "Validar e qualificar",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -80,
+        0
+      ]
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{ $json }}",
+        "options": {
+          "responseCode": "={{ $json.statusCode }}"
+        }
+      },
+      "id": "bd01dfa2-5202-4472-9619-b93edbf96935",
+      "name": "Responder",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.4,
+      "position": [
+        180,
+        0
+      ]
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Receber lead": {
+      "main": [
+        [
+          {
+            "node": "Validar e qualificar",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Validar e qualificar": {
+      "main": [
+        [
+          {
+            "node": "Responder",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "37cd4cf2-0bbe-43fd-976d-2e1cb0ee20d6",
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "tags": []
+}
