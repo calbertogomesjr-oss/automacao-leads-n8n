@@ -88,24 +88,19 @@ O primeiro build baixa o Android SDK e demora alguns minutos. Acompanhe:
 docker logs -f agente-nutri
 ```
 
-### 3. Domínio (HTTPS)
+### 3. Domínio (HTTPS pelo Traefik da VPS)
 
-Aponte o subdomínio para a VPS e faça o proxy para `127.0.0.1:3100` no proxy que
-você já usa. Exemplo com Caddy:
+O `docker-compose.yml` já traz as *labels* para o Traefik que roda na VPS
+(provider docker, `exposedbydefault=false`, entrypoint `websecure`, certresolver
+`letsencrypt`). Nada muda no container do Traefik: ele detecta o container novo
+sozinho.
 
-```
-nutri.seudominio.com.br {
-    reverse_proxy 127.0.0.1:3100
-}
-```
+1. Crie um registro DNS **A** do `DOMINIO` apontando para o IP da VPS.
+2. Espere o DNS propagar. O certificado do Let's Encrypt (desafio HTTP) só sai depois disso.
+3. Teste:
 
-Exemplo com nginx (com certificado já configurado):
-
-```nginx
-location / {
-    proxy_pass http://127.0.0.1:3100;
-    proxy_read_timeout 1800s;
-}
+```bash
+curl -s https://nutri.seudominio.com.br/saude
 ```
 
 A rota `/tarefa` exige o `TOKEN`; o resto (site e `/app.apk`) é público.
@@ -125,6 +120,9 @@ A rota `/tarefa` exige o `TOKEN`; o resto (site e `/app.apk`) é público.
 4. **Ative** o workflow (o modo app guarda estado só em execuções de produção).
 
 ### 5. Webhook da Evolution
+
+> A Evolution precisa estar saudável (`docker ps` sem "Restarting"). Sem ela,
+> o n8n não recebe as mensagens do WhatsApp e o agente não é acionado.
 
 Cada instância da Evolution manda os eventos para **uma** URL. Escolha:
 

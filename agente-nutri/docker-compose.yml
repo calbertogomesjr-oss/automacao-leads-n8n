@@ -6,9 +6,9 @@ services:
     env_file: .env
     environment:
       TZ: America/Sao_Paulo
-    # Só a própria VPS acessa a porta; o domínio público passa pelo seu proxy (nginx/Traefik/Caddy).
+    # Porta só para a própria VPS (teste com curl). O acesso público passa pelo Traefik.
     ports:
-      - "127.0.0.1:3100:3100"
+      - "127.0.0.1:${PORTA_LOCAL:-3100}:3100"
     volumes:
       - dados:/dados
       - android:/home/node/.android   # chave que assina o APK: não apague
@@ -19,6 +19,15 @@ services:
       resources:
         limits:
           memory: 3g
+    # Usa o Traefik que já roda na VPS (provider docker, exposedbydefault=false).
+    labels:
+      - traefik.enable=true
+      - traefik.http.routers.agente-nutri.rule=Host(`${DOMINIO:?defina DOMINIO no .env}`)
+      - traefik.http.routers.agente-nutri.entrypoints=websecure
+      - traefik.http.routers.agente-nutri.tls=true
+      - traefik.http.routers.agente-nutri.tls.certresolver=letsencrypt
+      - traefik.http.routers.agente-nutri.service=agente-nutri
+      - traefik.http.services.agente-nutri.loadbalancer.server.port=3100
 
 volumes:
   dados:

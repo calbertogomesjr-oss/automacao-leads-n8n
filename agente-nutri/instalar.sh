@@ -32,7 +32,9 @@ else
   umask 077
   cat > .env <<EOF
 TOKEN=${token}
+DOMINIO=${dominio}
 URL_PUBLICA=https://${dominio}
+PORTA_LOCAL=3100
 AGENTE=claude
 CLAUDE_CODE_OAUTH_TOKEN=${token_claude}
 MODELO=
@@ -73,12 +75,14 @@ docker compose up -d --build
 
 echo
 verde "== Pronto! =="
-echo "Teste local:  curl -s http://127.0.0.1:3100/saude"
+porta=$(grep '^PORTA_LOCAL=' .env | cut -d= -f2)
+dominio=$(grep '^DOMINIO=' .env | cut -d= -f2)
+echo "Teste local:    curl -s http://127.0.0.1:${porta:-3100}/saude"
+echo "Teste público:  curl -s https://${dominio}/saude   (o DNS precisa apontar para esta VPS)"
 echo
-echo "Falta:"
-echo "  1. Apontar https://$(grep URL_PUBLICA .env | cut -d/ -f3) para 127.0.0.1:3100 no seu proxy (veja o README)."
-echo "  2. No n8n, credencial 'Header Auth' do nó Executar agente:"
+echo "Falta, no n8n: credencial 'Header Auth' do nó Executar agente:"
 echo "       Nome:  Authorization"
-echo "       Valor: Bearer $(grep '^TOKEN=' .env | cut -d= -f2)"
+echo "       Valor: Bearer <o TOKEN do .env>"
+echo "     Para ver o TOKEN no seu terminal (não cole em chats):  grep '^TOKEN=' .env"
 echo
 echo "Acompanhe o primeiro APK sendo gerado com:  docker logs -f agente-nutri"
