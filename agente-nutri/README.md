@@ -1,6 +1,6 @@
-# Agente nutri pelo WhatsApp
+# Flavinha: agente da nutricionista Odete pelo WhatsApp
 
-A nutricionista pede mudanças pelo WhatsApp ("adiciona uma receita sem glúten",
+A nutricionista Odete pede mudanças pelo WhatsApp à **Flavinha** ("adiciona uma receita sem glúten",
 "muda as cores para lilás") e um agente de código (Claude Code ou Codex) altera
 o site, publica e devolve o app Android (APK) na conversa.
 

@@ -58,7 +58,7 @@ async function existe(p) {
 const ARQUIVOS_DO_APP = ['www', 'capacitor.config.json', 'package.json'];
 
 const AJUDA = [
-  'Modo app ligado ✅',
+  'Oi, Odete! Aqui é a Flavinha 💚 Modo app ligado ✅',
   '',
   'Pode me pedir qualquer mudança no site e no app, do seu jeito. Exemplos:',
   '• "Coloca minha foto e um texto sobre mim na página inicial"',
@@ -126,7 +126,7 @@ export function criarAgente(cfg) {
 
   async function rodarAgente(mensagem, nome, estado) {
     const prompt = [
-      `Novo pedido da nutricionista pelo WhatsApp${nome ? ` (${nome})` : ''}:`,
+      `Novo pedido da Odete pelo WhatsApp${nome ? ` (contato: ${nome})` : ''}:`,
       '"""',
       mensagem,
       '"""',
@@ -173,7 +173,7 @@ export function criarAgente(cfg) {
 
     if (!texto) return { resposta: 'Não consegui ler sua mensagem. Pode mandar de novo por texto?' };
     if (['ajuda', 'menu', 'oi', 'ola'].includes(comando)) return { resposta: AJUDA };
-    if (comando === 'sair') return { resposta: 'Combinado, saí do modo app 👋 Quando quiser mexer no app, é só mandar *#app*.' };
+    if (comando === 'sair') return { resposta: 'Combinado, Odete! A Flavinha saiu do modo app 👋 Quando quiser mexer no app, é só mandar *#app*.' };
     if (comando === 'link' || comando === 'links') {
       const l = links();
       return { resposta: `Site: ${l.siteUrl}\nApp Android: ${l.apkUrl}`, ...l };

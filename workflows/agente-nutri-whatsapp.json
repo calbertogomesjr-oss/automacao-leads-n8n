@@ -1,5 +1,5 @@
 {
-  "name": "Agente nutri pelo WhatsApp",
+  "name": "Flavinha: agente da Odete pelo WhatsApp",
   "nodes": [
     {
       "parameters": {
@@ -14,8 +14,8 @@
         -1200,
         0
       ],
-      "webhookId": "5dcdf90c-d596-48ef-b6cd-53a094000c0d",
-      "id": "d84a789f-587c-46c4-b7a7-05de071e1e09"
+      "webhookId": "e3b1deb5-fb93-4895-a967-734603d785a9",
+      "id": "1af007e8-311b-466d-a6e4-3d712999baed"
     },
     {
       "parameters": {
@@ -23,37 +23,37 @@
         "assignments": {
           "assignments": [
             {
-              "id": "deaae91d-779c-4b44-9465-cf8a00150a75",
+              "id": "9c191784-b5ee-4025-b513-2d8dc3e8d015",
               "name": "numerosPermitidos",
               "value": "5547999999999",
               "type": "string"
             },
             {
-              "id": "8fbbe43d-b999-46c5-8ce7-eb8fd2747e7b",
+              "id": "d59e75ea-ba98-4dc6-b365-c1ec40ae9613",
               "name": "prefixo",
               "value": "#app",
               "type": "string"
             },
             {
-              "id": "70564a93-6028-4af1-a655-40fe73fe7784",
+              "id": "8f6359dd-2fbe-48f9-a7f1-70a733da1b65",
               "name": "minutosModoApp",
               "value": "30",
               "type": "string"
             },
             {
-              "id": "81da6258-0030-47f2-98de-97124b41e753",
+              "id": "04a03231-8af1-4100-a53c-d8a48077ce58",
               "name": "evolutionUrl",
               "value": "https://evolution.seudominio.com.br",
               "type": "string"
             },
             {
-              "id": "e4ca14ae-3643-4f84-905e-f9687505eb69",
+              "id": "a4f25e87-9c76-4ea6-acf9-863a1790d13f",
               "name": "instancia",
               "value": "minha-instancia",
               "type": "string"
             },
             {
-              "id": "c4b42c07-ace5-46d4-b6cb-39668fc7c9d2",
+              "id": "45b42e40-1cb3-4438-96b2-c63a91f316d1",
               "name": "agenteUrl",
               "value": "https://nutri.stfu.fun",
               "type": "string"
@@ -72,7 +72,7 @@
       ],
       "notes": "numerosPermitidos: DDI+DDD+número separados por vírgula. prefixo: palavra que liga o modo app (vazio = toda mensagem vai para o agente).",
       "notesInFlow": true,
-      "id": "1a129065-592c-425a-a822-b5abc59b009f"
+      "id": "3df66dea-1f40-4d05-8a42-04736c66c3d1"
     },
     {
       "parameters": {
@@ -85,7 +85,7 @@
         -800,
         0
       ],
-      "id": "b07eb6dc-38c5-4353-afd2-2342b388f2ae"
+      "id": "42152433-d139-4bcb-82e1-0b6986713b9e"
     },
     {
       "parameters": {
@@ -98,7 +98,7 @@
           },
           "conditions": [
             {
-              "id": "4f9c2c45-58ec-474a-929e-602b382b1b7d",
+              "id": "6c69dd23-ec17-4c6a-bebd-c50aadfaea4d",
               "leftValue": "={{ $json.tipo }}",
               "rightValue": "audio",
               "operator": {
@@ -118,7 +118,7 @@
         -600,
         0
       ],
-      "id": "4a3527b4-f95c-41fa-b0a6-a5197f83f39e"
+      "id": "bf2c479c-79d0-4e33-a4a9-5779bc6e66e6"
     },
     {
       "parameters": {
@@ -138,7 +138,7 @@
         -400,
         -200
       ],
-      "id": "da4a5694-0b91-432c-ac6d-a7254bc7f6a5"
+      "id": "5f245b66-6a1a-4bde-89c0-81d86dfd9fbe"
     },
     {
       "parameters": {
@@ -156,7 +156,7 @@
         -200,
         -200
       ],
-      "id": "f46d9154-b2ea-4627-9ef4-5e30d3fd8fc5"
+      "id": "d60f50c1-3e01-4efb-87b2-41a9f1bd5483"
     },
     {
       "parameters": {
@@ -173,7 +173,7 @@
         0,
         -200
       ],
-      "id": "997b1588-358a-49d3-ad69-ce5fe127813e"
+      "id": "4f1dccbf-1fc9-4f25-8818-380d2d415da4"
     },
     {
       "parameters": {
@@ -186,7 +186,7 @@
         200,
         -200
       ],
-      "id": "84d4fe0b-34be-4a9c-b842-6cb5b6c838c1"
+      "id": "57598b51-0ff9-40c7-a4bb-7342b51e8661"
     },
     {
       "parameters": {},
@@ -197,7 +197,7 @@
         400,
         0
       ],
-      "id": "cf9af063-ec98-4ae6-ba32-4cf4856ac5bb"
+      "id": "7cd85389-6924-4e24-91c8-c2736f87aabf"
     },
     {
       "parameters": {
@@ -210,7 +210,7 @@
           },
           "conditions": [
             {
-              "id": "308eda2f-e49a-4d59-a24a-4d639852d467",
+              "id": "f60f9026-9bda-4422-96f4-0b15e00b0b7b",
               "leftValue": "={{ $json.rapido }}",
               "rightValue": "",
               "operator": {
@@ -231,7 +231,7 @@
         600,
         0
       ],
-      "id": "e8f7978f-698b-41aa-8aa0-8ea9fdb23a2a"
+      "id": "8c174e24-4793-4066-a1eb-2fa3ef892570"
     },
     {
       "parameters": {
@@ -241,7 +241,7 @@
         "genericAuthType": "httpHeaderAuth",
         "sendBody": true,
         "specifyBody": "json",
-        "jsonBody": "={{ JSON.stringify({ number: $('Pedido pronto').item.json.responderPara, text: 'Recebi! ✍️ Já estou trabalhando nisso e te aviso quando ficar pronto.' }) }}",
+        "jsonBody": "={{ JSON.stringify({ number: $('Pedido pronto').item.json.responderPara, text: 'Recebi, Odete! ✍️ A Flavinha já está trabalhando nisso e te avisa quando ficar pronto.' }) }}",
         "options": {}
       },
       "name": "Avisar que começou",
@@ -251,7 +251,7 @@
         800,
         -120
       ],
-      "id": "77d67ae8-0945-4c23-a5bf-a652e5854c38"
+      "id": "2d23259a-5a63-45a0-920b-6ebc112c3d12"
     },
     {
       "parameters": {
@@ -276,7 +276,7 @@
       "onError": "continueRegularOutput",
       "notes": "Credencial Header Auth: Authorization = Bearer <TOKEN do .env do agente>",
       "notesInFlow": true,
-      "id": "6e00ad71-c240-4c9f-906d-f1b6a4f1f0e1"
+      "id": "37ebe73d-eece-4d15-aaeb-dc519eeee948"
     },
     {
       "parameters": {
@@ -296,7 +296,7 @@
         1200,
         0
       ],
-      "id": "17ae4085-1a12-4dfa-a11a-2d212182eae1"
+      "id": "97f7df81-7491-4b4c-859c-0db609d7fddd"
     },
     {
       "parameters": {
@@ -309,7 +309,7 @@
           },
           "conditions": [
             {
-              "id": "32c9a3ac-bf54-482a-b7a1-e66833633217",
+              "id": "1c13dcaf-7ca6-4df8-b675-e3124a985aa3",
               "leftValue": "={{ $('Executar agente').item.json.enviarApk }}",
               "rightValue": "",
               "operator": {
@@ -330,7 +330,7 @@
         1400,
         0
       ],
-      "id": "1d27c29a-1e10-4c41-87d8-05c91ac56c5a"
+      "id": "6db9d86c-17dd-42e4-99ea-bd7c8bc90037"
     },
     {
       "parameters": {
@@ -350,7 +350,7 @@
         1600,
         -100
       ],
-      "id": "ee3c44eb-a881-4e16-afa8-65173f960140"
+      "id": "a85d27d4-38bb-43a8-8916-df7bff9378a2"
     }
   ],
   "pinData": {},

@@ -108,7 +108,10 @@ const pedir = async (mensagem, token = 'segredo') => {
 
 try {
   assert.equal((await pedir('oi', 'errado')).status, 401, 'Token errado é recusado.');
-  assert.match((await pedir('ajuda')).corpo.resposta, /desfazer/);
+  const ajuda = (await pedir('ajuda')).corpo.resposta;
+  assert.match(ajuda, /desfazer/);
+  assert.match(ajuda, /Odete/);
+  assert.match(ajuda, /Flavinha/);
 
   const siteInicial = await (await fetch(`${base}/`)).text();
   assert.match(siteInicial, /Comer bem, com segurança/, 'Site inicial publicado.');
