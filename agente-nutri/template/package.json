@@ -1,0 +1,16 @@
+{
+  "name": "app-nutri",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Site e app Android da nutricionista",
+  "scripts": {
+    "sync": "cap sync android"
+  },
+  "dependencies": {
+    "@capacitor/android": "7.6.10",
+    "@capacitor/core": "7.6.10"
+  },
+  "devDependencies": {
+    "@capacitor/cli": "7.6.10"
+  }
+}

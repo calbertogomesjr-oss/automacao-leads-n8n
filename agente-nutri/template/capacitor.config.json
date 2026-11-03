@@ -1,0 +1,8 @@
+{
+  "appId": "br.app.nutri.saude",
+  "appName": "Nutri",
+  "webDir": "www",
+  "android": {
+    "allowMixedContent": false
+  }
+}

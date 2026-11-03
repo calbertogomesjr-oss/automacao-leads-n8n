@@ -1,0 +1,107 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Nutri: alimentação sem complicação</title>
+  <meta name="description" content="Receitas, verificador de rótulos e diário alimentar para quem tem doença celíaca, intolerâncias ou segue uma dieta.">
+  <meta name="theme-color" content="#2f7d5b">
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="icon" href="icon.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="icon.svg">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header class="topo">
+    <img src="icon.svg" alt="" width="36" height="36">
+    <div>
+      <strong class="marca">Nutri</strong>
+      <span class="subtitulo">[Nome da Nutricionista] · CRN [CONFIRMAR]</span>
+    </div>
+  </header>
+
+  <main>
+    <section data-pagina="inicio" class="pagina ativa" aria-labelledby="t-inicio">
+      <div class="destaque">
+        <h1 id="t-inicio">Comer bem, com segurança</h1>
+        <p>Receitas, dicas e ferramentas para quem tem doença celíaca, intolerâncias alimentares ou quer seguir uma dieta com orientação.</p>
+        <a class="botao" id="link-agendar" href="#" target="_blank" rel="noopener">Agendar consulta</a>
+      </div>
+
+      <div class="cartoes">
+        <button class="cartao" data-ir="receitas">
+          <span class="cartao-titulo">Receitas</span>
+          <span>Filtre por sem glúten, sem lactose e mais</span>
+        </button>
+        <button class="cartao" data-ir="rotulos">
+          <span class="cartao-titulo">Verificar rótulo</span>
+          <span>Cole os ingredientes e veja os alertas</span>
+        </button>
+        <button class="cartao" data-ir="diario">
+          <span class="cartao-titulo">Meu diário</span>
+          <span>Anote refeições e água do dia</span>
+        </button>
+      </div>
+
+      <h2>Sobre mim</h2>
+      <p>[CONFIRMAR] Texto de apresentação da nutricionista: formação, especialidades e como atende (presencial e/ou online).</p>
+    </section>
+
+    <section data-pagina="receitas" class="pagina" aria-labelledby="t-receitas">
+      <h1 id="t-receitas">Receitas</h1>
+      <div class="filtros" role="group" aria-label="Filtrar receitas" id="filtros"></div>
+      <div id="lista-receitas" class="lista"></div>
+    </section>
+
+    <section data-pagina="rotulos" class="pagina" aria-labelledby="t-rotulos">
+      <h1 id="t-rotulos">Verificar rótulo</h1>
+      <p>Cole ou digite a lista de ingredientes do produto.</p>
+      <label for="ingredientes" class="rotulo-campo">Ingredientes</label>
+      <textarea id="ingredientes" rows="5" placeholder="Ex.: farinha de arroz, açúcar, extrato de malte, sal…"></textarea>
+      <button class="botao" id="verificar">Verificar</button>
+      <div id="resultado-rotulo" aria-live="polite"></div>
+      <p class="nota">A verificação procura palavras conhecidas e pode falhar. Sempre confira os avisos obrigatórios da embalagem (“contém glúten”, “contém lactose”, “alérgicos: …”) e, em caso de dúvida, não consuma.</p>
+    </section>
+
+    <section data-pagina="diario" class="pagina" aria-labelledby="t-diario">
+      <h1 id="t-diario">Meu diário</h1>
+      <p class="nota">Fica salvo só neste aparelho.</p>
+
+      <div class="agua">
+        <span>Água hoje: <strong id="copos">0</strong> copos</span>
+        <div>
+          <button class="botao-sec" id="menos-agua" aria-label="Remover um copo">−</button>
+          <button class="botao-sec" id="mais-agua" aria-label="Adicionar um copo">+</button>
+        </div>
+      </div>
+
+      <form id="form-refeicao" class="form">
+        <label for="refeicao-tipo">Refeição</label>
+        <select id="refeicao-tipo">
+          <option>Café da manhã</option>
+          <option>Lanche</option>
+          <option>Almoço</option>
+          <option>Jantar</option>
+          <option>Ceia</option>
+        </select>
+        <label for="refeicao-texto">O que comi</label>
+        <input id="refeicao-texto" required placeholder="Ex.: crepioca com frango e salada">
+        <label class="linha"><input type="checkbox" id="refeicao-sintoma"> Tive algum sintoma depois</label>
+        <button class="botao" type="submit">Salvar</button>
+      </form>
+      <ul id="lista-diario" class="diario"></ul>
+    </section>
+  </main>
+
+  <p class="aviso">Este app traz informações gerais e não substitui a consulta com nutricionista ou médico.</p>
+
+  <nav class="abas" aria-label="Navegação">
+    <button data-ir="inicio" class="ativa">Início</button>
+    <button data-ir="receitas">Receitas</button>
+    <button data-ir="rotulos">Rótulos</button>
+    <button data-ir="diario">Diário</button>
+  </nav>
+
+  <script src="app.js"></script>
+</body>
+</html>
