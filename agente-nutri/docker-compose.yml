@@ -1,0 +1,28 @@
+services:
+  agente-nutri:
+    build: .
+    container_name: agente-nutri
+    restart: unless-stopped
+    env_file: .env
+    environment:
+      TZ: America/Sao_Paulo
+    # Só a própria VPS acessa a porta; o domínio público passa pelo seu proxy (nginx/Traefik/Caddy).
+    ports:
+      - "127.0.0.1:3100:3100"
+    volumes:
+      - dados:/dados
+      - android:/home/node/.android   # chave que assina o APK: não apague
+      - gradle:/home/node/.gradle
+      - claude:/home/node/.claude
+      - codex:/home/node/.codex
+    deploy:
+      resources:
+        limits:
+          memory: 3g
+
+volumes:
+  dados:
+  android:
+  gradle:
+  claude:
+  codex:

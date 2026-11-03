@@ -84,3 +84,9 @@ node tests/test-workflow.mjs
 ## Autor
 
 Carlos Alberto Gomes Junior
+
+## Agente nutri pelo WhatsApp
+
+A pasta [`agente-nutri/`](agente-nutri/README.md) tem um agente que cria e mantém
+o site e o app Android de uma nutricionista a partir de pedidos pelo WhatsApp
+(Evolution API + n8n + Claude Code). Veja o guia de instalação no README da pasta.

@@ -1,0 +1,536 @@
+{
+  "name": "Agente nutri pelo WhatsApp",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "agente-nutri",
+        "options": {}
+      },
+      "name": "Receber da Evolution",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.1,
+      "position": [
+        -1200,
+        0
+      ],
+      "webhookId": "104a5e5c-4fe1-4458-92e8-6f3ecd265b19",
+      "id": "93d3f1cf-9ce6-484a-9bcd-102703d01bb9"
+    },
+    {
+      "parameters": {
+        "mode": "manual",
+        "assignments": {
+          "assignments": [
+            {
+              "id": "cb44089f-6f71-40c1-a2ef-dd8cf17b9f1d",
+              "name": "numerosPermitidos",
+              "value": "5547999999999",
+              "type": "string"
+            },
+            {
+              "id": "cbd18180-257d-4f4d-ba71-72230e4e185b",
+              "name": "prefixo",
+              "value": "#app",
+              "type": "string"
+            },
+            {
+              "id": "33438945-d801-47e9-8e16-8ef030afbd40",
+              "name": "minutosModoApp",
+              "value": "30",
+              "type": "string"
+            },
+            {
+              "id": "a0ae1460-f523-4140-830e-e6ef9eee74d0",
+              "name": "evolutionUrl",
+              "value": "https://evolution.seudominio.com.br",
+              "type": "string"
+            },
+            {
+              "id": "35268669-d927-41fc-85eb-347d640d449b",
+              "name": "instancia",
+              "value": "minha-instancia",
+              "type": "string"
+            },
+            {
+              "id": "d23a23a7-bdfd-4dec-9900-b917008c2676",
+              "name": "agenteUrl",
+              "value": "https://nutri.seudominio.com.br",
+              "type": "string"
+            }
+          ]
+        },
+        "includeOtherFields": true,
+        "options": {}
+      },
+      "name": "Configuração",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -1000,
+        0
+      ],
+      "notes": "numerosPermitidos: DDI+DDD+número separados por vírgula. prefixo: palavra que liga o modo app (vazio = toda mensagem vai para o agente).",
+      "notesInFlow": true,
+      "id": "29f1d318-6640-4b60-b74e-881ae0867086"
+    },
+    {
+      "parameters": {
+        "jsCode": "// Filtra a mensagem da Evolution API e extrai o texto.\nconst corpo = $json.body ?? {};\nconst evento = String(corpo.event ?? '').toLowerCase().replace(/_/g, '.');\nif (evento && evento !== 'messages.upsert') return [];\n\nconst dados = Array.isArray(corpo.data) ? corpo.data[0] ?? {} : corpo.data ?? {};\nconst chave = dados.key ?? {};\nif (chave.fromMe) return [];\n\nconst jid = String(chave.remoteJid ?? '');\nif (jid.endsWith('@g.us') || jid.includes('broadcast')) return []; // grupos e status\n\n// Com endereços @lid, o telefone vem em outro campo.\nconst jidTelefone = [chave.senderPn, chave.remoteJidAlt, chave.participantAlt, jid]\n  .map((j) => String(j ?? ''))\n  .find((j) => j.endsWith('@s.whatsapp.net')) ?? '';\nconst telefone = jidTelefone.split('@')[0].replace(/\\D/g, '');\n\n// Celulares do Brasil às vezes chegam sem o nono dígito: compara sem ele.\nconst normalizar = (n) => {\n  const d = String(n).replace(/\\D/g, '');\n  return d.length === 13 && d.startsWith('55') && d[4] === '9' ? d.slice(0, 4) + d.slice(5) : d;\n};\nconst permitidos = String($json.numerosPermitidos ?? '').split(',').map(normalizar).filter(Boolean);\nif (!telefone || !permitidos.includes(normalizar(telefone))) return [];\n\nconst msg = dados.message ?? {};\nlet texto = String(\n  msg.conversation ??\n  msg.extendedTextMessage?.text ??\n  msg.imageMessage?.caption ??\n  msg.videoMessage?.caption ??\n  msg.documentMessage?.caption ??\n  '',\n).trim();\nconst tipo = msg.audioMessage ? 'audio' : 'texto';\n\n// \"Modo app\": como o número é pessoal, só conversa com o agente depois de\n// \"#app\". O modo dura alguns minutos desde a última mensagem ou até \"sair\".\nconst prefixo = String($json.prefixo ?? '').trim().toLowerCase();\nconst duracaoMs = Number($json.minutosModoApp ?? 30) * 60_000;\nconst memoria = $getWorkflowStaticData('global');\nmemoria.modoApp = memoria.modoApp ?? {};\nconst quem = normalizar(telefone);\nconst agora = Date.now();\nlet ativo = prefixo === '' || (memoria.modoApp[quem] ?? 0) > agora;\nif (prefixo && texto.toLowerCase().startsWith(prefixo)) {\n  ativo = true;\n  texto = texto.slice(prefixo.length).trim() || 'ajuda';\n}\nif (!ativo) return [];\nif (tipo === 'texto' && !texto) return [];\n\nconst comando = texto.toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '').replace(/[!.?]+$/, '');\nif (comando === 'sair') delete memoria.modoApp[quem];\nelse memoria.modoApp[quem] = agora + duracaoMs;\nconst rapido = ['ajuda', 'menu', 'oi', 'ola', 'link', 'links', 'sair'].includes(comando);\n\nreturn [{\n  json: {\n    responderPara: telefone,\n    nome: dados.pushName ?? '',\n    idMensagem: chave.id ?? '',\n    tipo,\n    texto,\n    rapido,\n    evolutionUrl: String($json.evolutionUrl ?? '').replace(/\\/+$/, ''),\n    instancia: $json.instancia,\n    agenteUrl: String($json.agenteUrl ?? '').replace(/\\/+$/, ''),\n  },\n}];"
+      },
+      "name": "Filtrar e extrair",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -800,
+        0
+      ],
+      "id": "dcab3e10-34a4-4d77-b567-e729504b1aa6"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "7752449e-e445-4cdc-a733-4d56819147ee",
+              "leftValue": "={{ $json.tipo }}",
+              "rightValue": "audio",
+              "operator": {
+                "type": "string",
+                "operation": "equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "name": "É áudio?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        -600,
+        0
+      ],
+      "id": "42fbe3bc-c46d-4a80-ae65-497bd5e897f5"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "={{ $json.evolutionUrl }}/chat/getBase64FromMediaMessage/{{ $json.instancia }}",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify({ message: { key: { id: $json.idMensagem } }, convertToMp4: false }) }}",
+        "options": {}
+      },
+      "name": "Baixar áudio",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        -400,
+        -200
+      ],
+      "id": "22198b75-abe8-4a9a-b04b-3de72a33b43b"
+    },
+    {
+      "parameters": {
+        "operation": "toBinary",
+        "sourceProperty": "base64",
+        "options": {
+          "fileName": "audio.ogg",
+          "mimeType": "audio/ogg"
+        }
+      },
+      "name": "Converter áudio",
+      "type": "n8n-nodes-base.convertToFile",
+      "typeVersion": 1.1,
+      "position": [
+        -200,
+        -200
+      ],
+      "id": "444bb890-9ecb-42d1-aa17-f7cb516da7ac"
+    },
+    {
+      "parameters": {
+        "resource": "audio",
+        "operation": "transcribe",
+        "options": {
+          "language": "pt"
+        }
+      },
+      "name": "Transcrever (OpenAI)",
+      "type": "@n8n/n8n-nodes-langchain.openAi",
+      "typeVersion": 1.8,
+      "position": [
+        0,
+        -200
+      ],
+      "id": "b0a8ab14-b3f6-4ab2-82db-0a974c82859b"
+    },
+    {
+      "parameters": {
+        "jsCode": "const pedido = $('Filtrar e extrair').first().json;\nconst texto = String($json.text ?? '').trim();\nreturn [{ json: { ...pedido, texto, rapido: false } }];"
+      },
+      "name": "Texto do áudio",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        200,
+        -200
+      ],
+      "id": "9e506ec7-7ef2-433a-aa09-abe291525b78"
+    },
+    {
+      "parameters": {},
+      "name": "Pedido pronto",
+      "type": "n8n-nodes-base.noOp",
+      "typeVersion": 1,
+      "position": [
+        400,
+        0
+      ],
+      "id": "c5aab397-b00a-49c5-bda3-5aa01861ec41"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "27111fe5-64d0-4692-80ca-e03bd58824e2",
+              "leftValue": "={{ $json.rapido }}",
+              "rightValue": "",
+              "operator": {
+                "type": "boolean",
+                "operation": "false",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "name": "Avisar antes?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        600,
+        0
+      ],
+      "id": "188bdb55-eb24-43b9-bb71-f88d02ec3720"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "={{ $('Pedido pronto').item.json.evolutionUrl }}/message/sendText/{{ $('Pedido pronto').item.json.instancia }}",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify({ number: $('Pedido pronto').item.json.responderPara, text: 'Recebi! ✍️ Já estou trabalhando nisso e te aviso quando ficar pronto.' }) }}",
+        "options": {}
+      },
+      "name": "Avisar que começou",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        800,
+        -120
+      ],
+      "id": "05047cee-26d2-4b2c-b915-f4ef878e2ebd"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "={{ $('Pedido pronto').item.json.agenteUrl }}/tarefa",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify({ mensagem: $('Pedido pronto').item.json.texto, nome: $('Pedido pronto').item.json.nome }) }}",
+        "options": {
+          "timeout": 1800000
+        }
+      },
+      "name": "Executar agente",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        1000,
+        0
+      ],
+      "onError": "continueRegularOutput",
+      "notes": "Credencial Header Auth: Authorization = Bearer <TOKEN do .env do agente>",
+      "notesInFlow": true,
+      "id": "f04a7943-854f-4953-a31b-60e7dd88d700"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "={{ $('Pedido pronto').item.json.evolutionUrl }}/message/sendText/{{ $('Pedido pronto').item.json.instancia }}",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify({ number: $('Pedido pronto').item.json.responderPara, text: ($json.resposta || 'Tive um problema técnico agora 😕 Tenta de novo daqui a pouco?') + ($json.siteUrl ? '\\n\\n🌐 Site: ' + $json.siteUrl : '') }) }}",
+        "options": {}
+      },
+      "name": "Responder",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        1200,
+        0
+      ],
+      "id": "1d7fba0a-cfc3-4c7e-b5d3-779d994617dd"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "loose",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "945d5659-9a25-42f2-a77a-e89690259b5c",
+              "leftValue": "={{ $('Executar agente').item.json.enviarApk }}",
+              "rightValue": "",
+              "operator": {
+                "type": "boolean",
+                "operation": "true",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "name": "Mandar APK?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        1400,
+        0
+      ],
+      "id": "4f0dfad0-351a-49b7-965d-4f447a286203"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "={{ $('Pedido pronto').item.json.evolutionUrl }}/message/sendMedia/{{ $('Pedido pronto').item.json.instancia }}",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify({ number: $('Pedido pronto').item.json.responderPara, mediatype: 'document', mimetype: 'application/vnd.android.package-archive', fileName: 'Nutri.apk', media: $('Executar agente').item.json.apkUrl, caption: 'App atualizado 📱 Toque para instalar.' }) }}",
+        "options": {}
+      },
+      "name": "Enviar APK",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        1600,
+        -100
+      ],
+      "id": "e1a799f8-8d20-4e6c-a791-4f591e649e0b"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Receber da Evolution": {
+      "main": [
+        [
+          {
+            "node": "Configuração",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Configuração": {
+      "main": [
+        [
+          {
+            "node": "Filtrar e extrair",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Filtrar e extrair": {
+      "main": [
+        [
+          {
+            "node": "É áudio?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "É áudio?": {
+      "main": [
+        [
+          {
+            "node": "Baixar áudio",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Pedido pronto",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Baixar áudio": {
+      "main": [
+        [
+          {
+            "node": "Converter áudio",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Converter áudio": {
+      "main": [
+        [
+          {
+            "node": "Transcrever (OpenAI)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Transcrever (OpenAI)": {
+      "main": [
+        [
+          {
+            "node": "Texto do áudio",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Texto do áudio": {
+      "main": [
+        [
+          {
+            "node": "Pedido pronto",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Pedido pronto": {
+      "main": [
+        [
+          {
+            "node": "Avisar antes?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Avisar antes?": {
+      "main": [
+        [
+          {
+            "node": "Avisar que começou",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Executar agente",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Avisar que começou": {
+      "main": [
+        [
+          {
+            "node": "Executar agente",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Executar agente": {
+      "main": [
+        [
+          {
+            "node": "Responder",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Responder": {
+      "main": [
+        [
+          {
+            "node": "Mandar APK?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Mandar APK?": {
+      "main": [
+        [
+          {
+            "node": "Enviar APK",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        []
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "meta": {
+    "templateCredsSetupCompleted": false
+  },
+  "tags": []
+}
