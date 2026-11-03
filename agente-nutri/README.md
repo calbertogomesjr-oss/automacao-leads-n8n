@@ -48,12 +48,23 @@ limite do seu plano; `LIMITE_DIARIO` no `.env` evita que o agente esgote tudo.
 
 ### 2. Configurar e subir o agente
 
+Pelo terminal da VPS (na Hostinger: hPanel → VPS → **Terminal do navegador**):
+
 ```bash
-git clone https://github.com/calbertogomesjr-oss/automacao-leads-n8n.git
+git clone -b claude/admiring-knuth-i2mbvl https://github.com/calbertogomesjr-oss/automacao-leads-n8n.git
 ```
 
 ```bash
-cd automacao-leads-n8n/agente-nutri && cp .env.example .env
+cd automacao-leads-n8n/agente-nutri && bash instalar.sh
+```
+
+O `instalar.sh` pergunta o domínio, o token do Claude, o identificador e o nome
+do app, gera o `.env`, sobe o container e mostra o valor da credencial para o n8n.
+
+Se preferir fazer à mão:
+
+```bash
+cp .env.example .env
 ```
 
 Preencha o `.env`:
