@@ -14,8 +14,8 @@
         -1200,
         0
       ],
-      "webhookId": "104a5e5c-4fe1-4458-92e8-6f3ecd265b19",
-      "id": "93d3f1cf-9ce6-484a-9bcd-102703d01bb9"
+      "webhookId": "5dcdf90c-d596-48ef-b6cd-53a094000c0d",
+      "id": "d84a789f-587c-46c4-b7a7-05de071e1e09"
     },
     {
       "parameters": {
@@ -23,39 +23,39 @@
         "assignments": {
           "assignments": [
             {
-              "id": "cb44089f-6f71-40c1-a2ef-dd8cf17b9f1d",
+              "id": "deaae91d-779c-4b44-9465-cf8a00150a75",
               "name": "numerosPermitidos",
               "value": "5547999999999",
               "type": "string"
             },
             {
-              "id": "cbd18180-257d-4f4d-ba71-72230e4e185b",
+              "id": "8fbbe43d-b999-46c5-8ce7-eb8fd2747e7b",
               "name": "prefixo",
               "value": "#app",
               "type": "string"
             },
             {
-              "id": "33438945-d801-47e9-8e16-8ef030afbd40",
+              "id": "70564a93-6028-4af1-a655-40fe73fe7784",
               "name": "minutosModoApp",
               "value": "30",
               "type": "string"
             },
             {
-              "id": "a0ae1460-f523-4140-830e-e6ef9eee74d0",
+              "id": "81da6258-0030-47f2-98de-97124b41e753",
               "name": "evolutionUrl",
               "value": "https://evolution.seudominio.com.br",
               "type": "string"
             },
             {
-              "id": "35268669-d927-41fc-85eb-347d640d449b",
+              "id": "e4ca14ae-3643-4f84-905e-f9687505eb69",
               "name": "instancia",
               "value": "minha-instancia",
               "type": "string"
             },
             {
-              "id": "d23a23a7-bdfd-4dec-9900-b917008c2676",
+              "id": "c4b42c07-ace5-46d4-b6cb-39668fc7c9d2",
               "name": "agenteUrl",
-              "value": "https://nutri.seudominio.com.br",
+              "value": "https://nutri.stfu.fun",
               "type": "string"
             }
           ]
@@ -72,7 +72,7 @@
       ],
       "notes": "numerosPermitidos: DDI+DDD+número separados por vírgula. prefixo: palavra que liga o modo app (vazio = toda mensagem vai para o agente).",
       "notesInFlow": true,
-      "id": "29f1d318-6640-4b60-b74e-881ae0867086"
+      "id": "1a129065-592c-425a-a822-b5abc59b009f"
     },
     {
       "parameters": {
@@ -85,7 +85,7 @@
         -800,
         0
       ],
-      "id": "dcab3e10-34a4-4d77-b567-e729504b1aa6"
+      "id": "b07eb6dc-38c5-4353-afd2-2342b388f2ae"
     },
     {
       "parameters": {
@@ -98,7 +98,7 @@
           },
           "conditions": [
             {
-              "id": "7752449e-e445-4cdc-a733-4d56819147ee",
+              "id": "4f9c2c45-58ec-474a-929e-602b382b1b7d",
               "leftValue": "={{ $json.tipo }}",
               "rightValue": "audio",
               "operator": {
@@ -118,7 +118,7 @@
         -600,
         0
       ],
-      "id": "42fbe3bc-c46d-4a80-ae65-497bd5e897f5"
+      "id": "4a3527b4-f95c-41fa-b0a6-a5197f83f39e"
     },
     {
       "parameters": {
@@ -138,7 +138,7 @@
         -400,
         -200
       ],
-      "id": "22198b75-abe8-4a9a-b04b-3de72a33b43b"
+      "id": "da4a5694-0b91-432c-ac6d-a7254bc7f6a5"
     },
     {
       "parameters": {
@@ -156,7 +156,7 @@
         -200,
         -200
       ],
-      "id": "444bb890-9ecb-42d1-aa17-f7cb516da7ac"
+      "id": "f46d9154-b2ea-4627-9ef4-5e30d3fd8fc5"
     },
     {
       "parameters": {
@@ -173,7 +173,7 @@
         0,
         -200
       ],
-      "id": "b0a8ab14-b3f6-4ab2-82db-0a974c82859b"
+      "id": "997b1588-358a-49d3-ad69-ce5fe127813e"
     },
     {
       "parameters": {
@@ -186,7 +186,7 @@
         200,
         -200
       ],
-      "id": "9e506ec7-7ef2-433a-aa09-abe291525b78"
+      "id": "84d4fe0b-34be-4a9c-b842-6cb5b6c838c1"
     },
     {
       "parameters": {},
@@ -197,7 +197,7 @@
         400,
         0
       ],
-      "id": "c5aab397-b00a-49c5-bda3-5aa01861ec41"
+      "id": "cf9af063-ec98-4ae6-ba32-4cf4856ac5bb"
     },
     {
       "parameters": {
@@ -210,7 +210,7 @@
           },
           "conditions": [
             {
-              "id": "27111fe5-64d0-4692-80ca-e03bd58824e2",
+              "id": "308eda2f-e49a-4d59-a24a-4d639852d467",
               "leftValue": "={{ $json.rapido }}",
               "rightValue": "",
               "operator": {
@@ -231,7 +231,7 @@
         600,
         0
       ],
-      "id": "188bdb55-eb24-43b9-bb71-f88d02ec3720"
+      "id": "e8f7978f-698b-41aa-8aa0-8ea9fdb23a2a"
     },
     {
       "parameters": {
@@ -251,7 +251,7 @@
         800,
         -120
       ],
-      "id": "05047cee-26d2-4b2c-b915-f4ef878e2ebd"
+      "id": "77d67ae8-0945-4c23-a5bf-a652e5854c38"
     },
     {
       "parameters": {
@@ -276,7 +276,7 @@
       "onError": "continueRegularOutput",
       "notes": "Credencial Header Auth: Authorization = Bearer <TOKEN do .env do agente>",
       "notesInFlow": true,
-      "id": "f04a7943-854f-4953-a31b-60e7dd88d700"
+      "id": "6e00ad71-c240-4c9f-906d-f1b6a4f1f0e1"
     },
     {
       "parameters": {
@@ -296,7 +296,7 @@
         1200,
         0
       ],
-      "id": "1d7fba0a-cfc3-4c7e-b5d3-779d994617dd"
+      "id": "17ae4085-1a12-4dfa-a11a-2d212182eae1"
     },
     {
       "parameters": {
@@ -309,7 +309,7 @@
           },
           "conditions": [
             {
-              "id": "945d5659-9a25-42f2-a77a-e89690259b5c",
+              "id": "32c9a3ac-bf54-482a-b7a1-e66833633217",
               "leftValue": "={{ $('Executar agente').item.json.enviarApk }}",
               "rightValue": "",
               "operator": {
@@ -330,7 +330,7 @@
         1400,
         0
       ],
-      "id": "4f0dfad0-351a-49b7-965d-4f447a286203"
+      "id": "1d27c29a-1e10-4c41-87d8-05c91ac56c5a"
     },
     {
       "parameters": {
@@ -350,7 +350,7 @@
         1600,
         -100
       ],
-      "id": "e1a799f8-8d20-4e6c-a791-4f591e649e0b"
+      "id": "ee3c44eb-a881-4e16-afa8-65173f960140"
     }
   ],
   "pinData": {},

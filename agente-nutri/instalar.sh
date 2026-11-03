@@ -20,7 +20,8 @@ if [ -f .env ]; then
 else
   echo
   verde "== Configuração do agente =="
-  read -rp "Domínio público do site (ex.: nutri.seudominio.com.br): " dominio
+  read -rp "Domínio público do site [nutri.stfu.fun]: " dominio
+  dominio=${dominio:-nutri.stfu.fun}
   dominio=${dominio#https://}; dominio=${dominio#http://}; dominio=${dominio%/}
   echo
   echo "Token da sua assinatura do Claude."

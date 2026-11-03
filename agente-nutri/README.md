@@ -70,7 +70,7 @@ cp .env.example .env
 Preencha o `.env`:
 
 - `TOKEN`: senha longa (gere com `openssl rand -hex 32`). O n8n usa a mesma.
-- `URL_PUBLICA`: domínio onde o site vai ficar, ex. `https://nutri.seudominio.com.br`.
+- `URL_PUBLICA`: domínio onde o site vai ficar, ex. `https://nutri.stfu.fun`.
 - `CLAUDE_CODE_OAUTH_TOKEN`: o token do passo 1.
 
 **Antes de subir pela primeira vez**, ajuste em `template/capacitor.config.json`:
@@ -100,7 +100,7 @@ sozinho.
 3. Teste:
 
 ```bash
-curl -s https://nutri.seudominio.com.br/saude
+curl -s https://nutri.stfu.fun/saude
 ```
 
 A rota `/tarefa` exige o `TOKEN`; o resto (site e `/app.apk`) é público.
