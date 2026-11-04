@@ -9,6 +9,13 @@ npm install --no-audit --no-fund --loglevel=error
 if [ ! -d android ]; then
   npx cap add android
 fi
+# O app carrega o site ao vivo: uma mudanca de conteudo aparece ao reabrir o
+# app, sem instalar APK novo. O endereco vem do .env de cada instalacao,
+# nunca fixo aqui, para um cliente nao apontar para o site de outro.
+if [ -n "${URL_PUBLICA:-}" ]; then
+  node -e 'const fs=require("fs");const p="capacitor.config.json";const c=JSON.parse(fs.readFileSync(p,"utf8"));c.server={url:process.env.URL_PUBLICA,cleartext:false};fs.writeFileSync(p,JSON.stringify(c,null,2));'
+fi
+
 npx cap sync android
 
 # Número de versão só cresce (mesmo depois de "desfazer"), senão o Android

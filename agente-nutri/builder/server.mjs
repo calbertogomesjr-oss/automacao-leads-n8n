@@ -237,7 +237,10 @@ export function criarAgente(cfg) {
     const apk = await gerarApk();
     let resposta = resultado.resposta;
     if (cfg.cmdApk && !apk.ok) resposta += '\n\n(O site já está atualizado. O app Android não saiu desta vez; mande *apk* para eu tentar de novo.)';
-    return { resposta, enviarApk: apk.ok, ...links() };
+    // O app carrega o site ao vivo (server.url no capacitor.config.json), entao
+    // mudanca de conteudo nao exige instalar APK novo: basta reabrir o app.
+    // Quem quiser o arquivo pede 'apk'.
+    return { resposta, enviarApk: false, ...links() };
   }
 
   // Executa um pedido por vez, na ordem em que chegaram.
