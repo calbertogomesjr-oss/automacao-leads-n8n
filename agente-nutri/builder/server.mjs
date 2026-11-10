@@ -18,6 +18,10 @@ export function lerConfig(env = process.env) {
     projetoDir: env.PROJETO_DIR ?? '/dados/projeto',
     publicoDir: env.PUBLICO_DIR ?? '/dados/publicado',
     templateDir: env.TEMPLATE_DIR ?? path.join(AQUI, 'template'),
+    // Nomes vem do .env: sem isso, cada instalacao nova herdaria o nome da
+    // cliente anterior.
+    assistente: env.NOME_ASSISTENTE ?? 'Flavinha',
+    cliente: env.NOME_CLIENTE ?? '',
     urlPublica: (env.URL_PUBLICA ?? `http://localhost:${env.PORTA ?? 3100}`).replace(/\/+$/, ''),
     tempoLimiteMs: Number(env.TEMPO_LIMITE_MIN ?? 15) * 60_000,
     limiteDiario: Number(env.LIMITE_DIARIO ?? 30),
@@ -57,20 +61,23 @@ async function existe(p) {
 
 const ARQUIVOS_DO_APP = ['www', 'capacitor.config.json', 'package.json'];
 
-const AJUDA = [
-  'Oi, Odete! Aqui é a Flavinha 💚 Modo app ligado ✅',
-  '',
-  'Pode me pedir qualquer mudança no site e no app, do seu jeito. Exemplos:',
-  '• "Coloca minha foto e um texto sobre mim na página inicial"',
-  '• "Adiciona uma receita de pão sem glúten"',
-  '• "Muda as cores para tons de lilás"',
-  '',
-  'Comandos rápidos:',
-  '• *link*: manda o link do site e do app',
-  '• *desfazer*: volta a última mudança',
-  '• *apk*: gera o app de novo',
-  '• *sair*: volta a conversar normal',
-].join('\n');
+const textoAjuda = (cfg) => {
+  const ola = cfg.cliente ? `Oi, ${cfg.cliente}!` : 'Oi!';
+  return [
+    `${ola} Aqui é a ${cfg.assistente} 💚`,
+    '',
+    'Pode me pedir qualquer mudança no site e no app, do seu jeito. Exemplos:',
+    '• "Coloca minha foto e um texto sobre mim na página inicial"',
+    '• "Adiciona uma receita de pão sem glúten"',
+    '• "Muda as cores para tons de lilás"',
+    '',
+    'Comandos rápidos:',
+    '• *link*: manda o link do site e do app',
+    '• *desfazer*: volta a última mudança',
+    '• *apk*: gera o app de novo',
+    '• *sair*: volta a conversar normal',
+  ].join('\n');
+};
 
 export function criarAgente(cfg) {
   const estadoArq = () => path.join(path.dirname(cfg.projetoDir), 'estado.json');
@@ -94,6 +101,15 @@ export function criarAgente(cfg) {
     if (!(await existe(path.join(cfg.projetoDir, '.git')))) {
       await mkdir(cfg.projetoDir, { recursive: true });
       await cp(cfg.templateDir, cfg.projetoDir, { recursive: true });
+      // O AGENTS.md do template usa marcadores; aqui eles viram os nomes
+      // desta instalacao.
+      const instrucoes = path.join(cfg.projetoDir, 'AGENTS.md');
+      if (await existe(instrucoes)) {
+        const texto = await readFile(instrucoes, 'utf8');
+        await writeFile(instrucoes, texto
+          .split('{{ASSISTENTE}}').join(cfg.assistente)
+          .split('{{CLIENTE}}').join(cfg.cliente || 'a cliente'));
+      }
       await git(cfg, 'init', '-q', '-b', 'main');
       await git(cfg, 'add', '-A');
       await git(cfg, 'commit', '-q', '-m', 'Projeto inicial');
@@ -126,7 +142,7 @@ export function criarAgente(cfg) {
 
   async function rodarAgente(mensagem, nome, estado) {
     const prompt = [
-      `Novo pedido da Odete pelo WhatsApp${nome ? ` (contato: ${nome})` : ''}:`,
+      `Novo pedido${cfg.cliente ? ' da ' + cfg.cliente : ''} pelo WhatsApp${nome ? ` (contato: ${nome})` : ''}:`,
       '"""',
       mensagem,
       '"""',
@@ -172,8 +188,8 @@ export function criarAgente(cfg) {
     const comando = texto.toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '').replace(/[!.?]+$/, '');
 
     if (!texto) return { resposta: 'Não consegui ler sua mensagem. Pode mandar de novo por texto?' };
-    if (['ajuda', 'menu', 'oi', 'ola'].includes(comando)) return { resposta: AJUDA };
-    if (comando === 'sair') return { resposta: 'Combinado, Odete! A Flavinha saiu do modo app 👋 Quando quiser mexer no app, é só mandar *#app*.' };
+    if (['ajuda', 'menu', 'oi', 'ola'].includes(comando)) return { resposta: textoAjuda(cfg) };
+    if (comando === 'sair') return { resposta: `Tudo bem${cfg.cliente ? ', ' + cfg.cliente : ''}! Estou por aqui sempre que precisar 💚` };
     if (comando === 'link' || comando === 'links') {
       const l = links();
       return { resposta: `Site: ${l.siteUrl}\nApp Android: ${l.apkUrl}`, ...l };

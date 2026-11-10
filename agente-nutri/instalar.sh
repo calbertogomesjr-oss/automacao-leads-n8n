@@ -28,6 +28,9 @@ else
   echo "No seu computador, rode 'claude setup-token' e cole aqui o token gerado."
   read -rsp "Token (não aparece enquanto digita): " token_claude; echo
   read -rp "Limite de pedidos por dia [30]: " limite
+  echo
+  read -rp "Nome da assistente [Flavinha]: " nome_assistente
+  read -rp "Primeiro nome de quem vai conversar com ela (ex.: Odete): " nome_cliente
   token=$(openssl rand -hex 32 2>/dev/null || head -c 32 /dev/urandom | od -An -tx1 | tr -d ' \n')
 
   umask 077
@@ -40,6 +43,8 @@ AGENTE=claude
 CLAUDE_CODE_OAUTH_TOKEN=${token_claude}
 MODELO=
 LIMITE_DIARIO=${limite:-30}
+NOME_ASSISTENTE=${nome_assistente:-Flavinha}
+NOME_CLIENTE=${nome_cliente}
 TEMPO_LIMITE_MIN=15
 EOF
   verde ".env criado."
